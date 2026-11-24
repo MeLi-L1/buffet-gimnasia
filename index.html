@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7edf4">
+  <title>Buffet 2026 · CGP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">🤸</div>
+        <div><div class="brand-title">Buffet <span>2026</span></div><div class="brand-subtitle">Gala 2026 · CGP</div></div>
+      </div>
+      <div class="connection" id="connection"><i></i><span>Modo de prueba</span></div>
+    </header>
+
+    <main>
+      <section class="welcome">
+        <div><p class="eyebrow">ORGANIZACIÓN </p><h1>¡Vamo´ que <br><em>podemo´!</em></h1>
+        <p class="welcome-copy">Un solo lugar para organizar las tareas, las compras y las cuentas del buffet.</p></div>
+        <div class="welcome-art" aria-hidden="true">🤸<span>🥤</span><b>🍔</b></div>
+      </section>
+
+      <nav class="tabs" aria-label="Secciones">
+        <button class="tab active" data-tab="inicio">🏠 <span>Inicio</span></button>
+        <button class="tab" data-tab="tareas">☑️ <span>Tareas</span></button>
+        <button class="tab" data-tab="muro">💬 <span>Muro</span></button>
+        <button class="tab" data-tab="compras">🛒 <span>Compras</span></button>
+        <button class="tab" data-tab="caja">💰 <span>Gastos</span></button>
+      </nav>
+
+      <section class="panel active" id="panel-inicio">
+        <div class="section-heading"><div><p class="eyebrow">VISTA GENERAL</p><h2>El buffet, al día</h2></div><span class="date-pill" id="today"></span></div>
+        <div class="stats">
+          <article class="stat-card lilac"><span class="stat-icon">📋</span><span class="stat-label">Tareas pendientes</span><strong id="pending-count">0</strong></article>
+          <article class="stat-card mint"><span class="stat-icon">✅</span><span class="stat-label">Tareas listas</span><strong id="done-count">0</strong></article>
+          <article class="stat-card peach"><span class="stat-icon">🛍️</span><span class="stat-label">Compras pendientes</span><strong id="shopping-count">0</strong></article>
+        </div>
+        <div class="overview-grid">
+          <article class="card">
+            <div class="card-heading"><div><span class="mini-icon">💰</span><h3>Registros de caja</h3></div><button class="text-button" data-go="caja">Ver caja →</button></div>
+            <div class="balance" id="home-direct-count">0</div><p class="muted">Compras y gastos registrados</p>
+            <div class="balance-foot"><span>Productos a consignación</span><strong id="home-consignment-count">0</strong></div>
+          </article>
+          <article class="card">
+            <div class="card-heading"><div><span class="mini-icon">✨</span><h3>Próximos pendientes</h3></div><button class="text-button" data-go="tareas">Ver todas →</button></div>
+            <div id="home-tasks" class="compact-list"><p class="empty">Todavía no hay tareas.</p></div>
+          </article>
+        </div>
+        <div class="tip">💡 <span><strong>Un consejo:</strong> cada vez que alguien se encargue de algo, anótenlo acá para que todas estén al tanto.</span></div>
+      </section>
+
+      <section class="panel" id="panel-tareas">
+        <div class="section-heading"><div><p class="eyebrow">ORGANIZACIÓN</p><h2>Lista de tareas</h2><p class="muted">Repartimos las responsabilidades y vamos marcando lo terminado.</p></div></div>
+        <form class="form-card" id="task-form">
+          <h3>＋ Agregar una tarea</h3>
+          <div class="form-grid"><label class="wide">¿Qué hay que hacer?<input name="title" required maxlength="100" placeholder="Ej. Conseguir bebidas"></label>
+          <label>Responsable<input name="person" maxlength="50" placeholder="Nombre"></label>
+         
+          <button class="primary" type="submit">Agregar tarea</button>
+        </form>
+        <div class="filter-row"><div><h3>Todas las tareas</h3><span class="muted small" id="task-summary">0 tareas</span></div><select id="task-filter" aria-label="Filtrar tareas"><option value="all">Todas</option><option value="open">Pendientes</option><option value="done">Terminadas</option></select></div>
+        <div id="task-list" class="item-list"><div class="empty-state">Todavía no agregaron tareas. ¡Empecemos!</div></div>
+      </section>
+
+      <section class="panel" id="panel-muro">
+        <div class="section-heading"><div><p class="eyebrow">NOS COMUNICAMOS</p><h2>Muro de novedades</h2><p class="muted">Consultas, ideas y avisos para todas.</p></div></div>
+        <form class="form-card" id="post-form">
+          <h3>💬 Compartir algo con el grupo</h3>
+          <div class="form-grid"><label>Tu nombre<input name="person" required maxlength="50" placeholder="¿Quién escribe?"></label>
+          <label class="wide">Mensaje<textarea name="message" required maxlength="700" rows="3" placeholder="Escribí una novedad, consulta o propuesta..."></textarea></label></div>
+          <button class="primary" type="submit">Publicar mensaje</button>
+        </form>
+        <div id="post-list" class="post-list"><div class="empty-state">Todavía no hay mensajes.</div></div>
+      </section>
+
+      <section class="panel" id="panel-compras">
+        <div class="section-heading"><div><p class="eyebrow">QUÉ NOS FALTA</p><h2>Lista de compras</h2><p class="muted">Anotamos lo que necesitamos y quién se ocupa.</p></div></div>
+        <form class="form-card" id="shopping-form">
+          <h3>＋ Agregar producto</h3>
+          <div class="form-grid"><label>Producto<input name="title" required maxlength="100" placeholder="Ej. Vasos descartables"></label>
+          <label>Cantidad<input name="quantity" maxlength="40" placeholder="Ej. 3 paquetes"></label>
+          <label>¿Quién se ocupa?<input name="person" maxlength="50" placeholder="Nombre (opcional)"></label></div>
+          <button class="primary" type="submit">Agregar a la lista</button>
+        </form>
+        <div class="filter-row"><div><h3>Productos</h3><span class="muted small" id="shopping-summary">0 productos</span></div></div>
+        <div id="shopping-list" class="item-list"><div class="empty-state">La lista está vacía por ahora.</div></div>
+      </section>
+
+      <section class="panel" id="panel-caja">
+        <div class="section-heading"><div><p class="eyebrow">REGISTRO DEL BUFFET</p><h2>Caja del buffet</h2><p class="muted">Anotamos quién pagó cada cosa y qué mercadería retiramos a consignación.</p></div></div>
+        <form class="form-card" id="movement-form">
+          <h3>＋ Agregar un registro</h3>
+          <div class="form-grid">
+            <label>¿Qué querés registrar?<select name="type" id="movement-type"><option value="direct">Compra o gasto directo</option><option value="consignment">Mercadería a consignación</option></select></label>
+            <label>Concepto / producto<input name="title" required maxlength="100" placeholder="Ej. Hielo / Gaseosas"></label>
+            <label id="movement-amount-field">Importe ($)<input name="amount" type="number" min="0" step="0.01" placeholder="Ej. 12500"></label>
+            <label id="movement-quantity-field" hidden>Cantidad<input name="quantity" maxlength="60" placeholder="Ej. 3 bultos"></label>
+            <label>¿Quién pagó / retiró?<input name="person" maxlength="50" placeholder="Nombre de la mamá"></label>
+            <label>Fecha<input name="date" type="date" required></label>
+            <label class="wide">Detalle (opcional)<textarea name="notes" rows="2" maxlength="300" placeholder="Alguna aclaración..."></textarea></label>
+          </div>
+          <p class="form-hint" id="movement-hint">Anotá qué se compró, cuánto costó y quién lo pagó.</p>
+          <button class="primary" type="submit">Guardar registro</button>
+        </form>
+        <div class="filter-row"><div><h3>🛍️ Compras y gastos directos</h3><span class="muted small">Cosas que se compraron o pagaron directamente</span></div></div>
+        <div id="direct-list" class="item-list"><div class="empty-state">Todavía no hay compras registradas.</div></div>
+        <div class="filter-row"><div><h3>📦 Mercadería a consignación</h3><span class="muted small">Bultos o productos retirados de la distribuidora</span></div></div>
+        <div id="consignment-list" class="item-list"><div class="empty-state">Todavía no hay mercadería registrada.</div></div>
+      </section>
+    </main>
+    <footer>Hecho con 💗</footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
