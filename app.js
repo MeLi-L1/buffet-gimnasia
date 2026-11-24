@@ -127,17 +127,20 @@
     window.scrollTo({top:0,behavior:"smooth"});
   }
   $("#task-filter").addEventListener("change",render);
-  $("#task-form").addEventListener("submit",async e=>{
+  $("#task-form").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const f = new FormData(e.currentTarget);
+  // Guardamos una referencia al formulario antes del await.
+  const form = e.currentTarget;
 
-  if(await insert("tasks", {
+  const f = new FormData(form);
+
+  if (await insert("tasks", {
     title: f.get("title").trim(),
     person: f.get("person").trim(),
     done: false
   })) {
-    e.currentTarget.reset();
+    form.reset();
     toast("Tarea agregada 💗");
   }
 });
